@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naina AI</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f0f0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      background: linear-gradient(45deg, #ff9a8b, #ff6a88, #ff5e62);
+    }
+
+    header {
+      width: 100%;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 1.8em;
+      font-weight: bold;
+      color: white;
+      background-color: #ff6a88;
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 0 0 20px 20px;
+    }
+
+    .chat-container {
+      width: 90%;
+      max-width: 800px;
+      height: 70vh;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      border-radius: 20px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      background: #f9f9f9;
+      border-radius: 0 0 20px 20px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 10px 15px;
+      border-radius: 20px;
+      font-size: 1em;
+      word-wrap: break-word;
+      position: relative;
+    }
+
+    .message.user {
+      background-color: #d0f7ff;
+      margin-left: auto;
+      border-radius: 20px 20px 0 20px;
+    }
+
+    .message.gpt {
+      background-color: #e8f5e9;
+      margin-right: auto;
+      border-radius: 20px 20px 20px 0;
+    }
+
+    .chat-footer {
+      display: flex;
+      padding: 10px;
+      background-color: #fff;
+      border-top: 1px solid #ddd;
+    }
+
+    .chat-footer input {
+      flex: 1;
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      margin-right: 10px;
+      outline: none;
+    }
+
+    .chat-footer button {
+      padding: 10px 15px;
+      font-size: 1em;
+      background-color: #ff6a88;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .chat-footer button:hover {
+      background-color: #ff5e62;
+    }
+
+    .footer-text {
+      text-align: center;
+      color: #bbb;
+      font-size: 0.8em;
+      margin: 10px 0;
+    }
+
+    .floating-element {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 1.8em;
+      color: #ff6a88;
+      animation: float 2s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      header {
+        font-size: 1.5em;
+        padding: 10px;
+      }
+
+      .chat-container {
+        height: 75vh;
+      }
+
+      .chat-footer input {
+        padding: 8px;
+        font-size: 0.9em;
+      }
+
+      .chat-footer button {
+        padding: 8px 12px;
+        font-size: 0.9em;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        font-size: 1.2em;
+      }
+
+      .chat-container {
+        height: 80vh;
+      }
+
+      .message {
+        font-size: 0.9em;
+      }
+
+      .chat-footer input {
+        padding: 6px;
+        font-size: 0.8em;
+      }
+
+      .chat-footer button {
+        padding: 6px 10px;
+        font-size: 0.8em;
+      }
+
+      .floating-element {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    Naina AI 
+  </header>
+
+  <div class="floating-element">
+    ✨
+  </div>
+
+  <div class="chat-container">
+    <div class="chat-body" id="chatBody"></div>
+    <div class="chat-footer">
+      <input type="text" id="userInput" placeholder="How are you feeling today?" />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <div class="footer-text">Made by Charan - 22L31A0575 - CSE-2</div>
+
+  <script>
+    const chatBody = document.getElementById('chatBody');
+    const typingIndicator = document.getElementById('typingIndicator');
+
+    function appendMessage(message, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+      messageDiv.textContent = message;
+      chatBody.appendChild(messageDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const userInput = document.getElementById('userInput');
+      const message = userInput.value.trim();
+
+      if (message === '') return;
+
+      appendMessage(message, 'user');
+      userInput.value = '';
+
+      try {
+        const response = await fetch('/therapy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message }),
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch response');
+
+        const data = await response.json();
+        appendMessage(data.response, 'gpt');
+      } catch (error) {
+        appendMessage('Error communicating with the server.', 'gpt');
+        console.error(error);
+      }
+    }
+
+    document.getElementById('userInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+  </script>
+
+</body>
+</html>

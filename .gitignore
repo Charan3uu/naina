@@ -1,0 +1,18 @@
+# Ignore environment files (API keys, secrets)
+.env
+api.env
+
+# Ignore virtual environment (if using venv)
+venv/
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Flask session files
+flask_session/
+
+# Ignore system files (Mac & Windows)
+.DS_Store
+Thumbs.db
