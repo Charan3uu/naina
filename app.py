@@ -62,4 +62,4 @@ def home():
     return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='flourishing-parfait-863bab.netlify.app', port=80, debug=True)
