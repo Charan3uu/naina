@@ -1,258 +1,582 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Naina AI</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f0f0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-      background: linear-gradient(45deg, #ff9a8b, #ff6a88, #ff5e62);
-    }
-
-    header {
-      width: 100%;
-      padding: 10px 20px;
-      text-align: center;
-      font-size: 1.8em;
-      font-weight: bold;
-      color: white;
-      background-color: #ff6a88;
-      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
-      border-radius: 0 0 20px 20px;
-    }
-
-    .chat-container {
-      width: 90%;
-      max-width: 800px;
-      height: 70vh;
-      background: #ffffff;
-      display: flex;
-      flex-direction: column;
-      border-radius: 20px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-    }
-
-    .chat-body {
-      flex: 1;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
-      background: #f9f9f9;
-      border-radius: 0 0 20px 20px;
-    }
-
-    .message {
-      max-width: 80%;
-      padding: 10px 15px;
-      border-radius: 20px;
-      font-size: 1em;
-      word-wrap: break-word;
-      position: relative;
-    }
-
-    .message.user {
-      background-color: #d0f7ff;
-      margin-left: auto;
-      border-radius: 20px 20px 0 20px;
-    }
-
-    .message.gpt {
-      background-color: #e8f5e9;
-      margin-right: auto;
-      border-radius: 20px 20px 20px 0;
-    }
-
-    .chat-footer {
-      display: flex;
-      padding: 10px;
-      background-color: #fff;
-      border-top: 1px solid #ddd;
-    }
-
-    .chat-footer input {
-      flex: 1;
-      padding: 10px;
-      font-size: 1em;
-      border-radius: 20px;
-      border: 1px solid #ddd;
-      margin-right: 10px;
-      outline: none;
-    }
-
-    .chat-footer button {
-      padding: 10px 15px;
-      font-size: 1em;
-      background-color: #ff6a88;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-    }
-
-    .chat-footer button:hover {
-      background-color: #ff5e62;
-    }
-
-    .footer-text {
-      text-align: center;
-      color: #bbb;
-      font-size: 0.8em;
-      margin: 10px 0;
-    }
-
-    .floating-element {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      font-size: 1.8em;
-      color: #ff6a88;
-      animation: float 2s infinite ease-in-out;
-    }
-
-    @keyframes float {
-      0% {
-        transform: translateY(0);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Naina AI - Therapy Chat</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #6a11cb;
+        --primary-light: #8e54e9;
+        --secondary: #2575fc;
+        --text: #333;
+        --text-light: #777;
+        --bg-light: #f8f9fa;
+        --card-bg: #fff;
+        --transition: all 0.3s ease;
       }
-      50% {
-        transform: translateY(-10px);
-      }
-      100% {
-        transform: translateY(0);
-      }
-    }
 
-    /* Media Queries */
-    @media (max-width: 768px) {
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", "Segoe UI", sans-serif;
+        color: var(--text);
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        max-width: 1000px;
+        width: 90%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+
       header {
-        font-size: 1.5em;
-        padding: 10px;
+        position: sticky;
+        top: 0;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        z-index: 10;
+        padding: 1rem 0;
+        color: white;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .logo h1 {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+
+      .logo-icon {
+        font-size: 2.2rem;
       }
 
       .chat-container {
-        height: 75vh;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        background: var(--card-bg);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       }
 
-      .chat-footer input {
-        padding: 8px;
-        font-size: 0.9em;
+      .chat-header {
+        padding: 1rem 1.5rem;
+        background: var(--bg-light);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
-      .chat-footer button {
-        padding: 8px 12px;
-        font-size: 0.9em;
-      }
-    }
-
-    @media (max-width: 480px) {
-      header {
-        font-size: 1.2em;
+      .assistant-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
       }
 
-      .chat-container {
-        height: 80vh;
+      .assistant-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-light),
+          var(--secondary)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+      }
+
+      .assistant-status {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .assistant-name {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+
+      .status {
+        font-size: 0.75rem;
+        color: #4caf50;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #4caf50;
+      }
+
+      .chat-options {
+        cursor: pointer;
+        color: var(--text-light);
+      }
+
+      .chat-body {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
       }
 
       .message {
-        font-size: 0.9em;
+        max-width: 75%;
+        padding: 1rem;
+        border-radius: 1rem;
+        position: relative;
+        line-height: 1.5;
       }
 
-      .chat-footer input {
-        padding: 6px;
-        font-size: 0.8em;
+      .message.user {
+        align-self: flex-end;
+        background: var(--primary-light);
+        color: white;
+        border-bottom-right-radius: 0.25rem;
       }
 
-      .chat-footer button {
-        padding: 6px 10px;
-        font-size: 0.8em;
+      .message.assistant {
+        align-self: flex-start;
+        background: var(--bg-light);
+        border-bottom-left-radius: 0.25rem;
       }
 
-      .floating-element {
-        font-size: 1.5em;
+      .message.typing {
+        display: flex;
+        align-items: center;
+        min-height: 42px;
       }
-    }
-  </style>
-</head>
-<body>
 
-  <header>
-    Naina AI 
-  </header>
+      .typing-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
 
-  <div class="floating-element">
-    ✨
-  </div>
+      .typing-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--text-light);
+        animation: typing-animation 1.4s infinite ease-in-out;
+      }
 
-  <div class="chat-container">
-    <div class="chat-body" id="chatBody"></div>
-    <div class="chat-footer">
-      <input type="text" id="userInput" placeholder="How are you feeling today?" />
-      <button onclick="sendMessage()">Send</button>
+      .typing-dot:nth-child(1) {
+        animation-delay: 0s;
+      }
+
+      .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes typing-animation {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .time {
+        position: absolute;
+        font-size: 0.7rem;
+        color: var(--text-light);
+        bottom: -1.2rem;
+      }
+
+      .message.user .time {
+        right: 0.5rem;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .message.assistant .time {
+        left: 0.5rem;
+      }
+
+      .chat-footer {
+        position: sticky;
+        bottom: 0;
+        background: var(--card-bg);
+        padding: 1rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .input-container {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: var(--bg-light);
+        border-radius: 2rem;
+        padding: 0.5rem 1rem;
+      }
+
+      .input-container input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 0.5rem 0;
+        outline: none;
+        font-size: 1rem;
+        color: var(--text);
+      }
+
+      .input-container .input-icon {
+        color: var(--text-light);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .input-container .input-icon:hover {
+        color: var(--primary);
+      }
+
+      .send-btn {
+        background: linear-gradient(
+          135deg,
+          var(--primary-light),
+          var(--primary)
+        );
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .send-btn:hover {
+        transform: scale(1.05);
+      }
+
+      .footer-text {
+        text-align: center;
+        margin-top: 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.8rem;
+      }
+
+      .suggestion-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .suggestion-pill {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 1rem;
+        padding: 0.5rem 1rem;
+        color: white;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        user-select: none;
+      }
+
+      .suggestion-pill:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+        .container {
+          width: 95%;
+          margin: 1rem auto;
+          height: calc(100vh - 2rem);
+        }
+
+        .logo h1 {
+          font-size: 1.5rem;
+        }
+
+        .message {
+          max-width: 85%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .chat-header {
+          padding: 0.75rem 1rem;
+        }
+
+        .assistant-avatar {
+          width: 35px;
+          height: 35px;
+        }
+
+        .chat-body {
+          padding: 1rem;
+        }
+
+        .message {
+          padding: 0.75rem;
+          max-width: 90%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <div class="logo-icon">✨</div>
+          <h1>Naina AI</h1>
+        </div>
+      </header>
+
+      <div class="suggestion-pills">
+        <div class="suggestion-pill" onclick="usePrompt(this)">
+          I'm feeling anxious
+        </div>
+        <div class="suggestion-pill" onclick="usePrompt(this)">
+          Can't sleep well
+        </div>
+        <div class="suggestion-pill" onclick="usePrompt(this)">
+          Feeling overwhelmed
+        </div>
+        <div class="suggestion-pill" onclick="usePrompt(this)">
+          Need motivation
+        </div>
+      </div>
+
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="assistant-info">
+            <div class="assistant-avatar">
+              <i class="fas fa-brain"></i>
+            </div>
+            <div class="assistant-status">
+              <div class="assistant-name">Naina</div>
+              <div class="status">
+                <div class="status-dot"></div>
+                <span>Online</span>
+              </div>
+            </div>
+          </div>
+          <div class="chat-options">
+            <i class="fas fa-ellipsis-v"></i>
+          </div>
+        </div>
+
+        <div class="chat-body" id="chatBody">
+          <div class="message assistant">
+            Hi there! I'm Naina, your AI therapy companion. How are you feeling
+            today?
+            <div class="time">11:00 AM</div>
+          </div>
+        </div>
+
+        <div class="chat-footer">
+          <div class="input-container">
+            <div class="input-icon">
+              <i class="far fa-smile"></i>
+            </div>
+            <input
+              type="text"
+              id="userInput"
+              placeholder="Type your message here..."
+            />
+            <div class="input-icon">
+              <i class="fas fa-paperclip"></i>
+            </div>
+            <button class="send-btn" onclick="sendMessage()">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-text">Made by Charan - 22L31A0575 - CSE-2</div>
     </div>
-  </div>
 
-  <div class="footer-text">Made by Charan - 22L31A0575 - CSE-2</div>
+    <script>
+      const chatBody = document.getElementById("chatBody");
+      const userInput = document.getElementById("userInput");
+      const API_ENDPOINT = "/therapy"; // Update this to your actual endpoint
 
-  <script>
-    const chatBody = document.getElementById('chatBody');
-    const typingIndicator = document.getElementById('typingIndicator');
-
-    function appendMessage(message, sender) {
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `message ${sender}`;
-      messageDiv.textContent = message;
-      chatBody.appendChild(messageDiv);
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    async function sendMessage() {
-      const userInput = document.getElementById('userInput');
-      const message = userInput.value.trim();
-
-      if (message === '') return;
-
-      appendMessage(message, 'user');
-      userInput.value = '';
-
-      try {
-        const response = await fetch('/therapy', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message }),
-        });
-
-        if (!response.ok) throw new Error('Failed to fetch response');
-
-        const data = await response.json();
-        appendMessage(data.response, 'gpt');
-      } catch (error) {
-        appendMessage('Error communicating with the server.', 'gpt');
-        console.error(error);
+      // Function to get current time in 12-hour format
+      function getCurrentTime() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        return `${hours}:${minutes} ${ampm}`;
       }
-    }
 
-    document.getElementById('userInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        sendMessage();
+      // Function to create and append a message
+      function appendMessage(message, sender) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${sender}`;
+        messageDiv.innerHTML = message;
+
+        const timeSpan = document.createElement("div");
+        timeSpan.className = "time";
+        timeSpan.textContent = getCurrentTime();
+        messageDiv.appendChild(timeSpan);
+
+        chatBody.appendChild(messageDiv);
+        scrollToBottom();
+
+        return messageDiv;
       }
-    });
-  </script>
 
-</body>
+      // Function to scroll to the bottom of the chat
+      function scrollToBottom() {
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      // Function to show typing indicator
+      function showTypingIndicator() {
+        const typingDiv = document.createElement("div");
+        typingDiv.className = "message assistant typing";
+        typingDiv.id = "typingIndicator";
+        typingDiv.innerHTML = `
+        <div class="typing-indicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      `;
+        chatBody.appendChild(typingDiv);
+        scrollToBottom();
+      }
+
+      // Function to remove typing indicator
+      function removeTypingIndicator() {
+        const typingIndicator = document.getElementById("typingIndicator");
+        if (typingIndicator) {
+          typingIndicator.remove();
+        }
+      }
+
+      // Function to simulate typing effect
+      function typeMessage(text, callback) {
+        removeTypingIndicator();
+
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "message assistant";
+        chatBody.appendChild(messageDiv);
+
+        const timeSpan = document.createElement("div");
+        timeSpan.className = "time";
+        timeSpan.textContent = getCurrentTime();
+
+        let i = 0;
+        const typingSpeed = 15; // milliseconds per character
+
+        function typeNextChar() {
+          if (i < text.length) {
+            messageDiv.textContent += text.charAt(i);
+            scrollToBottom();
+            i++;
+            setTimeout(typeNextChar, typingSpeed);
+          } else {
+            messageDiv.appendChild(timeSpan);
+            scrollToBottom();
+            if (callback) callback();
+          }
+        }
+
+        typeNextChar();
+      }
+
+      // Function to send user message
+      async function sendMessage() {
+        const message = userInput.value.trim();
+        if (message === "") return;
+
+        // Display user message
+        appendMessage(message, "user");
+        userInput.value = "";
+
+        // Show typing indicator
+        showTypingIndicator();
+
+        try {
+          // Send message to backend API
+          const response = await fetch(API_ENDPOINT, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message: message }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const data = await response.json();
+
+          // Type out the assistant's response with typing animation
+          typeMessage(data.response);
+        } catch (error) {
+          console.error("Error:", error);
+          removeTypingIndicator();
+          typeMessage(
+            "Sorry, I'm having trouble connecting. Please try again later."
+          );
+        }
+      }
+
+      // Use suggestion pill
+      function usePrompt(element) {
+        userInput.value = element.textContent.trim();
+        userInput.focus();
+      }
+
+      // Send message on Enter key
+      userInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          sendMessage();
+        }
+      });
+
+      // Focus on input field when page loads
+      window.onload = function () {
+        userInput.focus();
+      };
+    </script>
+  </body>
 </html>

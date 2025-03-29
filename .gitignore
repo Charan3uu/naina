@@ -1,5 +1,5 @@
 # Ignore environment files (API keys, secrets)
-
+api.env
 # Ignore virtual environment (if using venv)
 venv/
 
