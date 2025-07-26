@@ -49,7 +49,6 @@ def get_response(history):
         messages=history,
         max_tokens=1000,
         temperature=0.9,
-        top_p=0.95,
         frequency_penalty=0.3,
         presence_penalty=0.6
     )
