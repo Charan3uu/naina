@@ -77,12 +77,10 @@ def therapy():
 
 @app.route("/")
 def home():
-    """ Serve the HTML template """
     return render_template("index.html")
 
 @app.route("/reset", methods=["POST"])
 def reset():
-    """ Reset the chat history """
     global chat_history
     chat_history = [
         {
